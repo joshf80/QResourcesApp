@@ -171,6 +171,9 @@ form {
     border-radius: 6px;
     cursor: grab;
     transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .draggable-item:hover {
@@ -181,6 +184,38 @@ form {
 .draggable-item.dragging {
     opacity: 0.5;
     background: #e3f2fd;
+}
+
+.item-controls {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.move-btn {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    color: #0066cc;
+}
+
+.move-btn:hover:not(:disabled) {
+    background: #e3f2fd;
+    border-color: #0066cc;
+}
+
+.move-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #adb5bd;
 }
 
 .navigation-buttons {
@@ -298,6 +333,20 @@ textarea::placeholder {
         padding: 12px;
         min-height: 100px;
         font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    .draggable-item {
+        padding: 15px;
+    }
+
+    .move-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4em;
+    }
+
+    .item-controls {
+        margin-left: 15px;
     }
 }
 
