@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nextBtn.addEventListener('click', () => navigate(1));
 
         // Form submission
-        form.addEventListener('submit', async (e) => {
+        submitBtn.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             // Collect form data
