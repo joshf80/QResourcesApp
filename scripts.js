@@ -13,9 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const rangeSliders = form.querySelectorAll('.range-slider');
         rangeSliders.forEach(slider => {
             const valueDisplay = slider.nextElementSibling;
-            slider.addEventListener('input', () => {
-                valueDisplay.textContent = slider.value;
-            });
+            if (valueDisplay) {
+                slider.addEventListener('input', () => {
+                    try {
+                        valueDisplay.textContent = slider.value;
+                    } catch (error) {
+                        console.error('Error updating range slider display:', error);
+                    }
+                });
+            }
         });
 
         // Initialize option cards
@@ -134,47 +140,77 @@ document.addEventListener('DOMContentLoaded', function() {
         nextBtn.addEventListener('click', () => navigate(1));
 
         // Form submission
-        submitBtn.addEventListener('submit', async (e) => {
+        let isSubmitting = false;
+        submitBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             
-            // Collect form data
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                // Skip empty values
-                if (!value && value !== '0') return;
-                
-                if (key === 'resources' || key === 'features' || key === 'preferences') {
-                    if (!data[key]) data[key] = [];
-                    data[key].push(value);
-                } else {
-                    // Convert range slider values to numbers
-                    if (form.querySelector(`input[name="${key}"]`)?.type === 'range') {
-                        data[key] = parseInt(value);
+            // Ensure we're on the last section
+            if (currentSection !== sections.length - 1) {
+                console.error('Attempted submission from wrong section');
+                return;
+            }
+            
+            // Prevent double submission
+            if (isSubmitting) return;
+            isSubmitting = true;
+            
+            // Disable submit button to prevent multiple clicks
+            submitBtn.disabled = true;
+            
+            try {
+                // Validate required fields
+                const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+                let isValid = true;
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('error');
                     } else {
-                        data[key] = value;
+                        field.classList.remove('error');
+                    }
+                });
+
+                if (!isValid) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                // Collect form data
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    // Skip empty values
+                    if (!value && value !== '0') return;
+                    
+                    if (key === 'resources' || key === 'features' || key === 'preferences') {
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        // Convert range slider values to numbers
+                        if (form.querySelector(`input[name="${key}"]`)?.type === 'range') {
+                            data[key] = parseInt(value);
+                        } else {
+                            data[key] = value;
+                        }
+                    }
+                });
+
+                // Add timestamp and survey type
+                data.timestamp = new Date().toISOString();
+                data.surveyType = form.id;
+
+                // Get rankings if they exist
+                if (dragContainer) {
+                    const rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
+                        .map(item => item.dataset.value)
+                        .filter(value => value && value.trim() !== '');
+                    if (rankings.length > 0) {
+                        data.rankings = rankings;
                     }
                 }
-            });
 
-            // Add timestamp and survey type
-            data.timestamp = new Date().toISOString();
-            data.surveyType = form.id;
+                // Log the data being sent for debugging
+                console.log('Form data being sent:', data);
 
-            // Get rankings if they exist
-            if (dragContainer) {
-                const rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
-                    .map(item => item.dataset.value)
-                    .filter(value => value && value.trim() !== '');
-                if (rankings.length > 0) {
-                    data.rankings = rankings;
-                }
-            }
-
-            // Log the data being sent for debugging
-            console.log('Form data being sent:', data);
-
-            try {
                 // Submit to Formspree
                 const response = await fetch('https://formspree.io/f/manebrab', {
                     method: 'POST',
@@ -193,11 +229,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         navigate(-1);
                     }
                 } else {
-                    throw new Error('Error');
+                    throw new Error('Error submitting form');
                 }
             } catch (error) {
                 console.error('Error submitting survey response:', error);
-                alert('There was an error submitting your response. Please try again later.');
+                alert(error.message || 'There was an error submitting your response. Please try again later.');
+            } finally {
+                // Re-enable submit button and reset submission state
+                submitBtn.disabled = false;
+                isSubmitting = false;
             }
         });
 
@@ -206,4 +246,3 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNavigation();
     });
 });
-  
