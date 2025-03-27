@@ -134,34 +134,57 @@ document.addEventListener('DOMContentLoaded', function() {
         nextBtn.addEventListener('click', () => navigate(1));
 
         // Form submission
-        form.addEventListener('submit', async (e) => {
+        let isSubmitting = false;
+        submitBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             
-            // Collect form data
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                if (key === 'resources' || key === 'features' || key === 'preferences') {
-                    if (!data[key]) data[key] = [];
-                    data[key].push(value);
-                } else {
-                    data[key] = value;
-                }
-            });
-
-            // Add timestamp and survey type
-            data.timestamp = new Date().toISOString();
-            data.surveyType = form.id;
-
-            // Get rankings if they exist
-            if (dragContainer) {
-                data.rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
-                    .map(item => item.dataset.value);
-            }
-
+            // Prevent double submission
+            if (isSubmitting) return;
+            isSubmitting = true;
+            
+            // Disable submit button to prevent multiple clicks
+            submitBtn.disabled = true;
+            
             try {
+                // Collect form data
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    // Skip empty values
+                    if (!value && value !== '0') return;
+                    
+                    if (key === 'resources' || key === 'features' || key === 'preferences') {
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        // Convert range slider values to numbers
+                        if (form.querySelector(`input[name="${key}"]`)?.type === 'range') {
+                            data[key] = parseInt(value);
+                        } else {
+                            data[key] = value;
+                        }
+                    }
+                });
+
+                // Add timestamp and survey type
+                data.timestamp = new Date().toISOString();
+                data.surveyType = form.id;
+
+                // Get rankings if they exist
+                if (dragContainer) {
+                    const rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
+                        .map(item => item.dataset.value)
+                        .filter(value => value && value.trim() !== '');
+                    if (rankings.length > 0) {
+                        data.rankings = rankings;
+                    }
+                }
+
+                // Log the data being sent for debugging
+                console.log('Form data being sent:', data);
+
                 // Submit to Formspree
-                const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+                const response = await fetch('https://formspree.io/f/manebrab', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -183,6 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Error submitting survey response:', error);
                 alert('There was an error submitting your response. Please try again later.');
+            } finally {
+                // Re-enable submit button and reset submission state
+                submitBtn.disabled = false;
+                isSubmitting = false;
             }
         });
 
@@ -191,5 +218,3 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNavigation();
     });
 });
-  
-  
