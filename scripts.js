@@ -141,11 +141,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(form);
             const data = {};
             formData.forEach((value, key) => {
+                // Skip empty values
+                if (!value && value !== '0') return;
+                
                 if (key === 'resources' || key === 'features' || key === 'preferences') {
                     if (!data[key]) data[key] = [];
                     data[key].push(value);
                 } else {
-                    data[key] = value;
+                    // Convert range slider values to numbers
+                    if (form.querySelector(`input[name="${key}"]`)?.type === 'range') {
+                        data[key] = parseInt(value);
+                    } else {
+                        data[key] = value;
+                    }
                 }
             });
 
@@ -155,9 +163,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Get rankings if they exist
             if (dragContainer) {
-                data.rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
-                    .map(item => item.dataset.value);
+                const rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
+                    .map(item => item.dataset.value)
+                    .filter(value => value && value.trim() !== '');
+                if (rankings.length > 0) {
+                    data.rankings = rankings;
+                }
             }
+
+            // Log the data being sent for debugging
+            console.log('Form data being sent:', data);
 
             try {
                 // Submit to Formspree
@@ -171,14 +186,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (response.ok) {
                     // Show success message
-                    alert('Thank you for your feedback!');
+                    alert('Gracias!');
                     form.reset();
                     // Reset to first section
                     while (currentSection > 0) {
                         navigate(-1);
                     }
                 } else {
-                    throw new Error('Failed to submit response');
+                    throw new Error('Error');
                 }
             } catch (error) {
                 console.error('Error submitting survey response:', error);
@@ -191,5 +206,4 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNavigation();
     });
 });
-  
   
