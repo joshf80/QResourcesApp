@@ -30,28 +30,80 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Initialize drag and drop
+        // Initialize drag and drop with touch support
         const dragContainer = form.querySelector('#drag-container');
         if (dragContainer) {
             const draggableItems = dragContainer.querySelectorAll('.draggable-item');
-            draggableItems.forEach(item => {
+            let draggedItem = null;
+
+            // Add touch-friendly controls
+            draggableItems.forEach((item, index) => {
+                // Add move up/down buttons
+                const controls = document.createElement('div');
+                controls.className = 'item-controls';
+                controls.innerHTML = `
+                    <button class="move-btn up" ${index === 0 ? 'disabled' : ''}>↑</button>
+                    <button class="move-btn down" ${index === draggableItems.length - 1 ? 'disabled' : ''}>↓</button>
+                `;
+                item.appendChild(controls);
+
+                // Handle move up/down
+                controls.querySelector('.up').addEventListener('click', () => {
+                    const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
+                    const currentIndex = items.indexOf(item);
+                    if (currentIndex > 0) {
+                        dragContainer.insertBefore(item, items[currentIndex - 1]);
+                        updateMoveButtons();
+                    }
+                });
+
+                controls.querySelector('.down').addEventListener('click', () => {
+                    const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
+                    const currentIndex = items.indexOf(item);
+                    if (currentIndex < items.length - 1) {
+                        dragContainer.insertBefore(item, items[currentIndex + 2]);
+                        updateMoveButtons();
+                    }
+                });
+
+                // Keep drag functionality for desktop
                 item.addEventListener('dragstart', () => {
+                    draggedItem = item;
                     item.classList.add('dragging');
                 });
+
                 item.addEventListener('dragend', () => {
                     item.classList.remove('dragging');
+                    draggedItem = null;
+                    updateMoveButtons();
                 });
             });
 
+            // Update move buttons state
+            function updateMoveButtons() {
+                const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
+                items.forEach((item, index) => {
+                    const controls = item.querySelector('.item-controls');
+                    controls.querySelector('.up').disabled = index === 0;
+                    controls.querySelector('.down').disabled = index === items.length - 1;
+                });
+            }
+
+            // Keep drag and drop for desktop
             dragContainer.addEventListener('dragover', e => {
                 e.preventDefault();
-                const draggingItem = document.querySelector('.dragging');
-                const siblings = [...dragContainer.querySelectorAll('.draggable-item:not(.dragging)')];
-                const nextSibling = siblings.find(sibling => {
+                if (!draggedItem) return;
+                
+                const items = Array.from(dragContainer.querySelectorAll('.draggable-item:not(.dragging)'));
+                const nextSibling = items.find(sibling => {
                     const rect = sibling.getBoundingClientRect();
                     return e.clientY <= rect.top + rect.height / 2;
                 });
-                dragContainer.insertBefore(draggingItem, nextSibling);
+                
+                if (nextSibling) {
+                    dragContainer.insertBefore(draggedItem, nextSibling);
+                    updateMoveButtons();
+                }
             });
         }
 
@@ -101,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data.timestamp = new Date().toISOString();
             data.surveyType = form.id;
 
-            // Get drag and drop rankings if they exist
+            // Get rankings if they exist
             if (dragContainer) {
                 data.rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
                     .map(item => item.dataset.value);
@@ -109,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // Submit to Formspree
-                const response = await fetch('https://formspree.io/f/manebrab', {
+                const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -139,4 +191,5 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNavigation();
     });
 });
+  
   

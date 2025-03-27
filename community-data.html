@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Data Survey</title>
+  <title>Encuesta de Datos Comunitarios</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>Community Data Project Survey</h1>
-    <p>Your input helps us identify gaps in community resources.</p>
+    <h1>Encuesta del Proyecto de Datos Comunitarios</h1>
+    <p>Tu opinión nos ayuda a identificar las brechas en los recursos comunitarios.</p>
   </header>
 
   <form id="community-data-form">
@@ -19,24 +19,24 @@
 
     <!-- Section 1: Resource Awareness -->
     <div class="survey-section active" id="section-1">
-      <h2 class="section-title">Resource Awareness</h2>
+      <h2 class="section-title">Conocimiento de Recursos</h2>
       <div class="question-container">
-        <label class="question-label">How familiar are you with the following resources?</label>
+        <label class="question-label">¿Qué tan familiarizado está con los siguientes recursos?</label>
         
         <div class="option-card">
-          <label>Food Pantries</label>
+          <label>Bancos de Alimentos</label>
           <input type="range" class="range-slider" min="0" max="10" value="5" name="food-pantries">
           <div class="range-value">5</div>
         </div>
 
         <div class="option-card">
-          <label>Clinics</label>
+          <label>Clínicas</label>
           <input type="range" class="range-slider" min="0" max="10" value="5" name="clinics">
           <div class="range-value">5</div>
         </div>
 
         <div class="option-card">
-          <label>Shelters</label>
+          <label>Albergues</label>
           <input type="range" class="range-slider" min="0" max="10" value="5" name="shelters">
           <div class="range-value">5</div>
         </div>
@@ -45,58 +45,58 @@
 
     <!-- Section 2: Accessibility Challenges -->
     <div class="survey-section" id="section-2">
-      <h2 class="section-title">Accessibility Challenges</h2>
+      <h2 class="section-title">Desafíos de Accesibilidad</h2>
       <div class="question-container">
-        <label class="question-label">Drag the factors below to rank their importance in preventing access:</label>
+        <label class="question-label">Arrastre los factores a continuación para clasificar su importancia en la prevención del acceso:</label>
         <div id="drag-container">
-          <div draggable="true" class="draggable-item" data-value="Language Barriers">Language Barriers</div>
-          <div draggable="true" class="draggable-item" data-value="Distance">Distance</div>
-          <div draggable="true" class="draggable-item" data-value="Lack of Information">Lack of Information</div>
-          <div draggable="true" class="draggable-item" data-value="Transportation">Transportation</div>
-          <div draggable="true" class="draggable-item" data-value="Documentation">Time Constraints</div>
+          <div draggable="true" class="draggable-item" data-value="Barreras de Idioma">Barreras de Idioma</div>
+          <div draggable="true" class="draggable-item" data-value="Distancia">Distancia</div>
+          <div draggable="true" class="draggable-item" data-value="Falta de Información">Falta de Información</div>
+          <div draggable="true" class="draggable-item" data-value="Transporte">Transporte</div>
+          <div draggable="true" class="draggable-item" data-value="Restricciones de Tiempo">Restricciones de Tiempo</div>
         </div>
       </div>
     </div>
 
     <!-- Section 3: Resource Preferences -->
     <div class="survey-section" id="section-3">
-      <h2 class="section-title">Resource Preferences</h2>
+      <h2 class="section-title">Preferencias de Recursos</h2>
       <div class="question-container">
-        <label class="question-label">Select your preferred ways to receive information about resources:</label>
-        <div class="option-card" data-value="Website">
+        <label class="question-label">Seleccione sus formas preferidas de recibir información sobre recursos:</label>
+        <div class="option-card" data-value="Sitio Web">
           <input type="checkbox" name="preferences" value="Website" id="website">
-          <label for="website">Website</label>
+          <label for="website">Sitio Web</label>
         </div>
-        <div class="option-card" data-value="Community Events">
+        <div class="option-card" data-value="Eventos Comunitarios">
           <input type="checkbox" name="preferences" value="Community Events" id="events">
-          <label for="events">Community Events</label>
+          <label for="events">Eventos Comunitarios</label>
         </div>
-        <div class="option-card" data-value="Printed Materials">
+        <div class="option-card" data-value="Materiales Impresos">
           <input type="checkbox" name="preferences" value="Printed Materials" id="printed">
-          <label for="printed">Printed Materials</label>
+          <label for="printed">Materiales Impresos</label>
         </div>
-        <div class="option-card" data-value="Other">
+        <div class="option-card" data-value="Otro">
           <input type="checkbox" name="preferences" value="Other" id="other">
-          <label for="other">Other</label>
+          <label for="other">Otro</label>
         </div>
       </div>
     </div>
 
     <!-- Section 4: Additional Feedback -->
     <div class="survey-section" id="section-4">
-      <h2 class="section-title">Additional Feedback</h2>
+      <h2 class="section-title">Comentarios Adicionales</h2>
       <div class="question-container">
-        <label class="question-label">What additional resources would you like to see in the community?</label>
+        <label class="question-label">¿Qué recursos adicionales le gustaría ver en la comunidad?</label>
         <div class="option-card">
-          <textarea name="suggestions" rows="4" placeholder="Share your thoughts here..."></textarea>
+          <textarea name="suggestions" rows="4" placeholder="Comparta sus pensamientos aquí..."></textarea>
         </div>
       </div>
     </div>
 
     <div class="navigation-buttons">
-      <button type="button" class="nav-btn" id="prev-btn" disabled>Previous</button>
-      <button type="button" class="nav-btn" id="next-btn">Next</button>
-      <button type="submit" class="nav-btn" id="submit-btn" style="display: none;">Submit</button>
+      <button type="button" class="nav-btn" id="prev-btn" disabled>Anterior</button>
+      <button type="button" class="nav-btn" id="next-btn">Siguiente</button>
+      <button type="submit" class="nav-btn" id="submit-btn" style="display: none;">Enviar</button>
     </div>
   </form>
 
