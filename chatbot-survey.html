@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot Survey</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>AI Chatbot Survey</h1>
+    <p>Your input will guide the creation of a helpful tool for undocumented families.</p>
+  </header>
+
+  <form id="chatbot-survey-form">
+    <div class="progress-bar">
+      <div class="progress" id="survey-progress"></div>
+    </div>
+
+    <!-- Section 1: Legal and Rights Awareness -->
+    <div class="survey-section active" id="section-1">
+      <h2 class="section-title">Legal and Rights Awareness</h2>
+      <div class="question-container">
+        <label class="question-label">How well do you understand your legal rights?</label>
+        <div class="option-card">
+          <input type="range" class="range-slider" min="0" max="10" value="5" name="legal-rights">
+          <div class="range-value">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Resource Needs -->
+    <div class="survey-section" id="section-2">
+      <h2 class="section-title">Community Resource Needs</h2>
+      <div class="question-container">
+        <label class="question-label">Select the resources you use most often:</label>
+        <div class="option-card" data-value="Legal Aid">
+          <input type="checkbox" name="resources" value="Legal Aid" id="legal-aid">
+          <label for="legal-aid">Legal Aid</label>
+        </div>
+        <div class="option-card" data-value="Food Assistance">
+          <input type="checkbox" name="resources" value="Food Assistance" id="food">
+          <label for="food">Food Assistance</label>
+        </div>
+        <div class="option-card" data-value="Housing Help">
+          <input type="checkbox" name="resources" value="Housing Help" id="housing">
+          <label for="housing">Housing Help</label>
+        </div>
+        <div class="option-card" data-value="Healthcare">
+          <input type="checkbox" name="resources" value="Healthcare" id="healthcare">
+          <label for="healthcare">Healthcare</label>
+        </div>
+        <div class="option-card" data-value="Education">
+          <input type="checkbox" name="resources" value="Education" id="education">
+          <label for="education">Education</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Additional Feedback -->
+    <div class="survey-section" id="section-3">
+      <h2 class="section-title">Additional Feedback</h2>
+      <div class="question-container">
+        <label class="question-label">What other features or information would be helpful?</label>
+        <div class="option-card">
+          <textarea name="features" rows="4" placeholder="Share your thoughts here..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation-buttons">
+      <button type="button" class="nav-btn" id="prev-btn" disabled>Previous</button>
+      <button type="button" class="nav-btn" id="next-btn">Next</button>
+      <button type="submit" class="nav-btn" id="submit-btn" style="display: none;">Submit</button>
+    </div>
+  </form>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
