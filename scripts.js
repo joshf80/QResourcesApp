@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize current survey form
     const form = document.querySelector('form');
     if (!form) return;
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.slider').forEach(slider => {
         const output = slider.nextElementSibling;
         output.textContent = slider.value;
-        
+  
         slider.addEventListener('input', () => {
           output.textContent = slider.value;
         });
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function initCheckboxes() {
       document.querySelectorAll('.checkbox-option').forEach(option => {
         const checkbox = option.querySelector('input[type="checkbox"]');
-        
+  
         // Set initial state
         if (checkbox.checked) {
           option.style.backgroundColor = '#e3f2fd';
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
       container.querySelectorAll('.rank-item').forEach((item, index) => {
         // Initialize button states
         updateButtonStates(item, index);
-        
+  
         // Desktop drag events
         item.addEventListener('dragstart', (e) => {
           draggedItem = item;
@@ -103,13 +103,13 @@ document.addEventListener('DOMContentLoaded', function() {
         item.addEventListener('touchmove', (e) => {
           if (!draggedItem) return;
           e.preventDefault();
-          
+  
           const y = e.touches[0].clientY;
           const deltaY = y - touchStartY;
-          
+  
           // Move the dragged item visually
           draggedItem.style.transform = `translateY(${deltaY}px)`;
-          
+  
           // Find the element to swap with
           const afterElement = getDragAfterElement(container, y);
           if (afterElement && afterElement !== draggedItem.nextSibling) {
@@ -130,18 +130,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Button controls for accessibility
         const upBtn = item.querySelector('.move-btn.up');
         const downBtn = item.querySelector('.move-btn.down');
-        
+  
         upBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          e.preventDefault();
           const prev = item.previousElementSibling;
           if (prev) {
             container.insertBefore(item, prev);
             updateAllButtonStates();
           }
         });
-        
+  
         downBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          e.preventDefault();
           const next = item.nextElementSibling;
           if (next) {
             container.insertBefore(next, item);
@@ -153,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
       container.addEventListener('dragover', (e) => {
         e.preventDefault();
         if (!draggedItem) return;
-        
+  
         const afterElement = getDragAfterElement(container, e.clientY);
         if (afterElement) {
           container.insertBefore(draggedItem, afterElement);
@@ -163,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
       function getDragAfterElement(container, y) {
         const elements = [...container.querySelectorAll('.rank-item:not(.dragging)')];
-        
+  
         return elements.reduce((closest, child) => {
           const box = child.getBoundingClientRect();
           const offset = y - box.top - box.height / 2;
@@ -174,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
       function updateButtonStates(item, index) {
         const items = Array.from(container.querySelectorAll('.rank-item'));
         const currentIndex = items.indexOf(item);
-        
+  
         item.querySelector('.up').disabled = currentIndex === 0;
         item.querySelector('.down').disabled = currentIndex === items.length - 1;
       }
@@ -188,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function initNavigation() {
       prevBtn.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('move-btn')) {
+        if (e.target === prevBtn) {
           if (currentSection > 0) {
             currentSection--;
             showSection(currentSection);
@@ -197,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   
       nextBtn.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('move-btn')) {
+        if (e.target === nextBtn) {
           if (currentSection < sections.length - 1) {
             currentSection++;
             showSection(currentSection);
@@ -209,21 +211,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // ======================
     // FORM SUBMISSION
     // ======================
-    submitBtn.addEventListener('click', async function(e) {
+    submitBtn.addEventListener('click', async function (e) {
       e.preventDefault();
-      
+  
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando...';
-      
+  
       try {
         // Collect form data
         const formData = new FormData(form);
         const data = {};
-        
+  
         // Process form data
         formData.forEach((value, key) => {
-          if (!data[key]) data[key] = [];
-          data[key].push(value);
+          // Handle checkboxes (multiple selections)
+          if (key === 'resources') {
+            if (!data[key]) data[key] = [];
+            data[key].push(value);
+          } 
+          // Handle all other fields (including suggestions)
+          else {
+            data[key] = value;
+          }
         });
   
         // Add rankings if available
@@ -233,10 +242,20 @@ document.addEventListener('DOMContentLoaded', function() {
             .map(item => item.dataset.value);
         }
   
+        // Add slider values
+        const sliders = document.querySelectorAll('.slider');
+        sliders.forEach(slider => {
+          const label = slider.closest('.slider-group').querySelector('label').textContent;
+          data[label] = slider.value;
+        });
+  
         // Submit data
         const response = await fetch('https://formspree.io/f/manebrab', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify(data)
         });
   
@@ -246,6 +265,12 @@ document.addEventListener('DOMContentLoaded', function() {
           // Reset to first section
           currentSection = 0;
           showSection(currentSection);
+          
+          // Reset sliders to default values
+          document.querySelectorAll('.slider').forEach(slider => {
+            slider.value = 5;
+            slider.nextElementSibling.textContent = '5';
+          });
         } else {
           throw new Error('Error en el envío');
         }
