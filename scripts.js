@@ -225,17 +225,11 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             // 1. Process all slider groups with their labels
+            // Inside the submitBtn click handler, replace the slider processing with:
             document.querySelectorAll('.slider-group').forEach(group => {
                 const label = group.querySelector('label').textContent.trim();
-                const slider = group.querySelector('.slider');
-                const value = slider.value;
-                data[label] = value;
-                
-                // For the output display
-                const output = slider.nextElementSibling;
-                if (output && output.tagName === 'OUTPUT') {
-                    data[label + '_display'] = output.textContent;
-                }
+                const slider = group.querySelector('input[type="range"]');
+                data[label] = slider.value; // Now captures all sliders
             });
 
             // 2. Process checkboxes (for AI Assistant form)
