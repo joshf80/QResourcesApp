@@ -3,103 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Data Survey</title>
+  <title>Encuesta de Recursos</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Community Data Project Survey</h1>
-    <p>Tu opinión nos ayuda a identificar las brechas en los recursos comunitarios</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Encuesta de Recursos Comunitarios</h1>
+      <p>Su opinión ayuda a mejorar los servicios en nuestra comunidad</p>
+    </header>
 
-  <form id="community-data-form">
-    <div class="progress-bar">
-      <div class="progress" id="survey-progress"></div>
-    </div>
+    <form id="community-data-form">
+      <div class="progress-bar">
+        <div class="progress" id="survey-progress"></div>
+      </div>
 
-    <!-- Section 1: Resource Awareness -->
-    <div class="survey-section active" id="section-1">
-      <h2 class="section-title">Conocimiento de Recursos</h2>
-      <div class="question-container">
-        <label class="question-label">¿Qué tan familiarizado estás con los siguientes recursos?</label>
-        
-        <div class="option-card">
-          <label>Bancos de Alimentos</label>
-          <input type="range" class="range-slider" min="0" max="10" value="5" name="food-pantries">
-          <div class="range-value">5</div>
-        </div>
+      <!-- Section 1 -->
+      <div class="survey-section active" id="section-1">
+        <h2>Conocimiento de Recursos</h2>
+        <div class="question">
+          <label>¿Qué tan familiarizado está con estos recursos?</label>
+          
+          <div class="slider-group">
+            <label>Bancos de Alimentos</label>
+            <input type="range" min="0" max="10" value="5" class="slider">
+            <output>5</output>
+          </div>
 
-        <div class="option-card">
-          <label>Clínicas</label>
-          <input type="range" class="range-slider" min="0" max="10" value="5" name="clinics">
-          <div class="range-value">5</div>
-        </div>
+          <div class="slider-group">
+            <label>Clínicas</label>
+            <input type="range" min="0" max="10" value="5" class="slider">
+            <output>5</output>
+          </div>
 
-        <div class="option-card">
-          <label>Albergues</label>
-          <input type="range" class="range-slider" min="0" max="10" value="5" name="shelters">
-          <div class="range-value">5</div>
+          <div class="slider-group">
+            <label>Albergues</label>
+            <input type="range" min="0" max="10" value="5" class="slider">
+            <output>5</output>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section 2: Accessibility Challenges -->
-    <div class="survey-section" id="section-2">
-      <h2 class="section-title">Desafíos de Accesibilidad</h2>
-      <div class="question-container">
-        <label class="question-label">Clasifica los factores a su importancia en la prevención del acceso:</label>
-        <div id="drag-container">
-          <div draggable="true" class="draggable-item" data-value="Barreras de Idioma">Barreras de Idioma</div>
-          <div draggable="true" class="draggable-item" data-value="Distancia">Distancia</div>
-          <div draggable="true" class="draggable-item" data-value="Falta de Información">Falta de Información</div>
-          <div draggable="true" class="draggable-item" data-value="Transporte">Transporte</div>
-          <div draggable="true" class="draggable-item" data-value="Restricciones de Tiempo">Restricciones de Tiempo</div>
+      <!-- Section 2 -->
+      <div class="survey-section" id="section-2">
+        <h2>Desafíos de Accesibilidad</h2>
+        <div class="question">
+          <label>Ordene por importancia estos obstáculos:</label>
+          <div class="ranking-box" id="drag-container">
+            <div class="rank-item" draggable="true">Barreras de Idioma</div>
+            <div class="rank-item" draggable="true">Distancia</div>
+            <div class="rank-item" draggable="true">Falta de Información</div>
+            <div class="rank-item" draggable="true">Transporte</div>
+            <div class="rank-item" draggable="true">Restricciones de Tiempo</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section 3: Resource Preferences -->
-    <div class="survey-section" id="section-3">
-      <h2 class="section-title">Preferencias de Recursos</h2>
-      <div class="question-container">
-        <label class="question-label">Seleccione sus formas preferidas de recibir información sobre recursos:</label>
-        <div class="option-card" data-value="Sitio Web">
-          <input type="checkbox" name="preferences" value="Website" id="website">
-          <label for="website">Sitio Web</label>
-        </div>
-        <div class="option-card" data-value="Eventos Comunitarios">
-          <input type="checkbox" name="preferences" value="Community Events" id="events">
-          <label for="events">Eventos Comunitarios</label>
-        </div>
-        <div class="option-card" data-value="Materiales Impresos">
-          <input type="checkbox" name="preferences" value="Printed Materials" id="printed">
-          <label for="printed">Materiales Impresos</label>
-        </div>
-        <div class="option-card" data-value="Otro">
-          <input type="checkbox" name="preferences" value="Other" id="other">
-          <label for="other">Otro</label>
-        </div>
+      <!-- Navigation -->
+      <div class="nav-buttons">
+        <button type="button" id="prev-btn" disabled>Anterior</button>
+        <button type="button" id="next-btn">Siguiente</button>
+        <button type="submit" id="submit-btn">Enviar</button>
       </div>
-    </div>
-
-    <!-- Section 4: Additional Feedback -->
-    <div class="survey-section" id="section-4">
-      <h2 class="section-title">Comentarios Adicionales</h2>
-      <div class="question-container">
-        <label class="question-label">¿Qué recursos adicionales le gustaría ver en la comunidad?</label>
-        <div class="option-card">
-          <textarea name="suggestions" rows="4" placeholder="Comparta sus pensamientos aquí..."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="navigation-buttons">
-      <button type="button" class="nav-btn" id="prev-btn" disabled>Anterior</button>
-      <button type="button" class="nav-btn" id="next-btn">Siguiente</button>
-      <button type="submit" class="nav-btn" id="submit-btn" style="display: none;">Enviar</button>
-    </div>
-  </form>
-
+    </form>
+  </div>
   <script src="scripts.js"></script>
 </body>
 </html>

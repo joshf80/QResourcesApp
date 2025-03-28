@@ -3,78 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chatbot Survey</title>
+  <title>Encuesta del Asistente Virtual</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Encuesta del Chatbot de IA</h1>
-    <p>Tu opinión guiará la creación de una herramienta útil para familias indocumentadas.</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Encuesta del Asistente Virtual</h1>
+      <p>Su opinión ayuda a crear herramientas para familias indocumentadas</p>
+    </header>
 
-  <form id="chatbot-survey-form">
-    <div class="progress-bar">
-      <div class="progress" id="survey-progress"></div>
-    </div>
+    <form id="chatbot-survey-form">
+      <div class="progress-bar">
+        <div class="progress" id="survey-progress"></div>
+      </div>
 
-    <!-- Section 1: Legal and Rights Awareness -->
-    <div class="survey-section active" id="section-1">
-      <h2 class="section-title">Conocimiento Legal y de Derechos</h2>
-      <div class="question-container">
-        <label class="question-label">¿Qué tan bien entiendes tus derechos legales?</label>
-        <div class="option-card">
-          <input type="range" class="range-slider" min="0" max="10" value="5" name="legal-rights">
-          <div class="range-value">5</div>
+      <!-- Section 1 -->
+      <div class="survey-section active" id="section-1">
+        <h2>Conocimiento Legal</h2>
+        <div class="question">
+          <label>¿Qué tan bien entiende sus derechos legales?</label>
+          <div class="slider-group">
+            <input type="range" min="0" max="10" value="5" class="slider" name="legal-rights">
+            <output>5</output>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section 2: Resource Needs -->
-    <div class="survey-section" id="section-2">
-      <h2 class="section-title">Necesidades de Recursos Comunitarios</h2>
-      <div class="question-container">
-        <label class="question-label">Seleccione los recursos que utiliza con más frecuencia:</label>
-        <div class="option-card" data-value="Ayuda Legal">
-          <input type="checkbox" name="resources" value="Legal Aid" id="legal-aid">
-          <label for="legal-aid">Ayuda Legal</label>
-        </div>
-        <div class="option-card" data-value="Asistencia Alimentaria">
-          <input type="checkbox" name="resources" value="Food Assistance" id="food">
-          <label for="food">Asistencia Alimentaria</label>
-        </div>
-        <div class="option-card" data-value="Ayuda con Vivienda">
-          <input type="checkbox" name="resources" value="Housing Help" id="housing">
-          <label for="housing">Ayuda con Vivienda</label>
-        </div>
-        <div class="option-card" data-value="Atención Médica">
-          <input type="checkbox" name="resources" value="Healthcare" id="healthcare">
-          <label for="healthcare">Atención Médica</label>
-        </div>
-        <div class="option-card" data-value="Educación">
-          <input type="checkbox" name="resources" value="Education" id="education">
-          <label for="education">Educación</label>
+      <!-- Section 2 -->
+      <div class="survey-section" id="section-2">
+        <h2>Recursos Necesarios</h2>
+        <div class="question">
+          <label>Seleccione los recursos que usa con frecuencia:</label>
+          
+          <div class="checkbox-group">
+            <label class="checkbox-option">
+              <input type="checkbox" name="resources" value="legal-aid">
+              <span>Ayuda Legal</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" name="resources" value="food-assistance">
+              <span>Asistencia Alimentaria</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" name="resources" value="housing">
+              <span>Ayuda con Vivienda</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" name="resources" value="healthcare">
+              <span>Atención Médica</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" name="resources" value="education">
+              <span>Educación</span>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section 3: Additional Feedback -->
-    <div class="survey-section" id="section-3">
-      <h2 class="section-title">Comentarios Adicionales</h2>
-      <div class="question-container">
-        <label class="question-label">¿Qué otras características o información serían útiles?</label>
-        <div class="option-card">
-          <textarea name="features" rows="4" placeholder="Comparta sus pensamientos aquí..."></textarea>
+      <!-- Section 3 -->
+      <div class="survey-section" id="section-3">
+        <h2>Comentarios</h2>
+        <div class="question">
+          <label>¿Qué información adicional sería útil?</label>
+          <textarea name="suggestions" rows="5" placeholder="Escriba sus sugerencias aquí..."></textarea>
         </div>
       </div>
-    </div>
 
-    <div class="navigation-buttons">
-      <button type="button" class="nav-btn" id="prev-btn" disabled>Anterior</button>
-      <button type="button" class="nav-btn" id="next-btn">Siguiente</button>
-      <button type="button" class="nav-btn" id="submit-btn" style="display: none;">Enviar</button>
-    </div>
-  </form>
-
+      <!-- Navigation -->
+      <div class="nav-buttons">
+        <button type="button" id="prev-btn" disabled>Anterior</button>
+        <button type="button" id="next-btn">Siguiente</button>
+        <button type="submit" id="submit-btn">Enviar</button>
+      </div>
+    </form>
+  </div>
   <script src="scripts.js"></script>
 </body>
 </html>

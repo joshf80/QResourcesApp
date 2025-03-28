@@ -1,4 +1,4 @@
-/* ===== BASE STYLES ===== */
+/* Base Styles */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,415 +6,187 @@
   }
   
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.5;
     color: #333;
-    background-color: #f5f7fa;
+    background: #f8fafc;
     padding: 20px;
+  }
+  
+  .container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
   }
   
   header {
     text-align: center;
     margin-bottom: 30px;
-    padding: 25px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    padding: 20px 0;
   }
   
   h1 {
     color: #2c3e50;
-    margin-bottom: 10px;
-    font-size: 1.8em;
-  }
-  
-  p {
-    color: #7f8c8d;
-    font-size: 1.05em;
-  }
-  
-  /* ===== FORM STYLES ===== */
-  form {
-    background-color: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-    margin-bottom: 30px;
-  }
-  
-  /* ===== PROGRESS BAR ===== */
-  .progress-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #ecf0f1;
-    border-radius: 5px;
-    margin-bottom: 25px;
-    overflow: hidden;
-  }
-  
-  .progress {
-    height: 100%;
-    background-color: #3498db;
-    width: 0%;
-    transition: width 0.4s ease;
-  }
-  
-  /* ===== SURVEY SECTIONS ===== */
-  .survey-section {
-    display: none;
-    animation: fadeIn 0.4s ease-out;
-  }
-  
-  .survey-section.active {
-    display: block;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .section-title {
-    color: #2980b9;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ecf0f1;
-  }
-  
-  /* ===== QUESTION STYLES ===== */
-  .question-container {
-    margin-bottom: 30px;
-  }
-  
-  .question-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #2c3e50;
-    font-size: 1.1em;
-  }
-  
-  /* ===== OPTION CARDS ===== */
-  .option-card {
-    padding: 15px;
-    margin: 10px 0;
-    background-color: #f8f9fa;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid #dfe6e9;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .option-card:hover {
-    background-color: #e8f4fc;
-    border-color: #3498db;
-  }
-  
-  .option-card.selected {
-    background-color: #d4e6f7;
-    border-color: #2980b9;
-    box-shadow: 0 2px 5px rgba(41, 128, 185, 0.2);
-  }
-  
-  .option-card input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  /* ===== RANGE SLIDERS ===== */
-  .range-slider {
-    width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 8px;
-    border-radius: 4px;
-    background: #dfe6e9;
-    outline: none;
-    margin: 15px 0;
-  }
-  
-  .range-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3498db;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .range-slider::-webkit-slider-thumb:hover {
-    background: #2980b9;
-    transform: scale(1.1);
-  }
-  
-  .range-value {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #2c3e50;
-    margin-top: 5px;
-  }
-  
-  /* ===== DRAG RANKING ===== */
-  #drag-container {
-    margin: 20px 0;
-  }
-  
-  .draggable-item {
-    padding: 15px;
-    margin: 12px 0;
-    background-color: white;
-    border: 2px solid #dfe6e9;
-    border-radius: 6px;
-    cursor: move;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .draggable-item.dragging {
-    opacity: 0.5;
-    background-color: #f1f9ff;
-    border-style: dashed;
-  }
-  
-  .item-controls {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .move-btn {
-    background: none;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
-    padding: 3px 8px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: all 0.2s;
-    pointer-events: auto;
-  }
-  
-  .move-btn:hover {
-    background-color: #3498db;
-    color: white;
-    border-color: #3498db;
-  }
-  
-  .move-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: transparent;
-    color: inherit;
-  }
-  
-  /* ===== TEXTAREA ===== */
-  textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #dfe6e9;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 1em;
-    resize: vertical;
-    min-height: 100px;
-    transition: border 0.3s;
-  }
-  
-  textarea:focus {
-    border-color: #3498db;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-  }
-  
-  /* ===== NAVIGATION BUTTONS ===== */
-  .navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-  }
-  
-  .nav-btn {
-    padding: 12px 25px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: all 0.3s;
-  }
-  
-  .nav-btn:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  .nav-btn:active {
-    transform: translateY(0);
-  }
-  
-  .nav-btn:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-  
-  #submit-btn {
-    background-color: #27ae60;
-  }
-  
-  #submit-btn:hover {
-    background-color: #219955;
-  }
-  
-  /* ===== ERROR STATES ===== */
-  .error {
-    border-color: #e74c3c !important;
-  }
-  
-  .error-message {
-    color: #e74c3c;
-    font-size: 0.85em;
-    margin-top: 5px;
-    font-weight: 500;
-  }
-  
-  /* ===== RESPONSIVE DESIGN ===== */
-  @media (max-width: 768px) {
-    body {
-      padding: 15px;
-    }
-    
-    header {
-      padding: 15px;
-    }
-    
-    form {
-      padding: 20px;
-    }
-    
-    .option-card, 
-    .draggable-item {
-      padding: 12px;
-    }
-    
-    .nav-btn {
-      padding: 10px 20px;
-      font-size: 0.9em;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .navigation-buttons {
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    .nav-btn {
-      width: 100%;
-    }
-  }
-
-  /* ===== HOME PAGE STYLES ===== */
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-  }
-  
-  .header h1 {
-    color: #2c3e50;
+    font-size: 1.8rem;
     margin-bottom: 10px;
   }
   
-  .subtitle {
-    color: #7f8c8d;
-    font-size: 1.1em;
-  }
-  
+  /* Homepage Styles */
   .survey-links {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 15px;
-    margin-bottom: 30px;
+    margin: 30px 0;
   }
   
   .survey-btn {
     display: flex;
     align-items: center;
-    padding: 18px 20px;
-    border-radius: 8px;
+    gap: 15px;
+    padding: 18px;
+    background: #e3f2fd;
+    color: #1565c0;
     text-decoration: none;
+    border-radius: 8px;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
     border: 2px solid transparent;
   }
   
   .survey-btn:hover {
+    background: #bbdefb;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   
-  .resource-survey {
-    background-color: #e3f2fd;
-    color: #1565c0;
+  .survey-btn span {
+    font-size: 1.5rem;
   }
   
-  .chatbot-survey {
-    background-color: #e8f5e9;
-    color: #2e7d32;
+  /* Survey Form Styles */
+  .progress-bar {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    overflow: hidden;
   }
   
-  .btn-icon {
-    font-size: 1.5em;
-    margin-right: 15px;
+  .progress {
+    height: 100%;
+    background: #3498db;
+    width: 0%;
+    transition: width 0.3s;
   }
   
-  .btn-text {
-    font-size: 1.1em;
+  .survey-section {
+    display: none;
   }
   
-  .footer {
-    text-align: center;
-    padding: 15px;
-    color: #7f8c8d;
-    font-size: 0.9em;
-    border-top: 1px solid #eee;
+  .survey-section.active {
+    display: block;
+    animation: fadeIn 0.4s;
   }
   
-  /* Mobile responsiveness */
-  @media (max-width: 480px) {
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .question {
+    margin-bottom: 30px;
+  }
+  
+  .slider-group {
+    margin: 20px 0;
+  }
+  
+  .slider {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .ranking-box {
+    margin: 20px 0;
+  }
+  
+  .rank-item {
+    padding: 12px;
+    margin: 8px 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: move;
+    position: relative;
+  }
+  
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  
+  .nav-buttons button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #3498db;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
     .container {
       padding: 15px;
     }
     
     .survey-btn {
-      padding: 15px;
       flex-direction: column;
       text-align: center;
     }
     
-    .btn-icon {
-      margin-right: 0;
-      margin-bottom: 10px;
+    .nav-buttons {
+      flex-direction: column;
     }
+  }
+
+  /* Chatbot Survey Specific Styles */
+.checkbox-group {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .checkbox-option:hover {
+    background: #e3f2fd;
+    border-color: #bbdefb;
+  }
+  
+  .checkbox-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    margin-top: 10px;
+    resize: vertical;
+    min-height: 120px;
   }
