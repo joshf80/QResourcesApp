@@ -3,22 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Surveys</title>
+  <title>Encuestas Comunitarias</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Community Surveys</h1>
-    <p>Help us improve resources and services in Jackson Heights. Select a survey to begin:</p>
-  </header>
-  <main>
-    <div class="survey-links">
-      <a href="community-data.html" class="survey-btn">Community Data Project Survey</a>
-      <a href="chatbot-survey.html" class="survey-btn">AI Chatbot for Undocumented Families</a>
-    </div>
-  </main>
-  <footer>
-    <p>&copy; 2025 Community Research Initiative</p>
-  </footer>
+  <div class="container">
+    <header class="header">
+      <h1>Encuestas Comunitarias</h1>
+      <p class="subtitle">Ayúdenos a mejorar los recursos en Jackson Heights. Escoja una encuesta:</p>
+    </header>
+    
+    <main class="main-content">
+      <div class="survey-links">
+        <a href="community-data.html" class="survey-btn resource-survey">
+          <span class="btn-icon">📊</span>
+          <span class="btn-text">Encuesta de Recursos Comunitarios</span>
+        </a>
+        
+        <a href="chatbot-survey.html" class="survey-btn chatbot-survey">
+          <span class="btn-icon">💬</span>
+          <span class="btn-text">Encuesta sobre Asistente Virtual para familias</span>
+        </a>
+      </div>
+    </main>
+    
+    <footer class="footer">
+      <p>© 2025 Iniciativa Comunitaria de Jackson Heights</p>
+    </footer>
+  </div>
 </body>
 </html>

@@ -1,10 +1,8 @@
-// scripts.js - Universal Survey Handler for Both Forms
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize any survey form on the page
     const form = document.querySelector('form[id$="-form"]');
     if (!form) return;
 
-    // Common elements
+    // Elements
     const sections = form.querySelectorAll('.survey-section');
     const progressBar = form.querySelector('.progress');
     const prevBtn = form.querySelector('#prev-btn');
@@ -12,14 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = form.querySelector('#submit-btn');
     let currentSection = 0;
 
-    // Initialize form components
+    // Initialize
     initRangeSliders();
     initOptionCards();
     initDragRanking();
     updateProgress();
     updateNavigation();
 
-    // Navigation functions
+    // ===== CORE FUNCTIONS =====
+
     function navigate(direction) {
         if (validateCurrentSection()) {
             sections[currentSection].classList.remove('active');
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sections[currentSection].classList.add('active');
             updateProgress();
             updateNavigation();
-            // Focus first input for accessibility
             sections[currentSection].querySelector('input, textarea, select')?.focus();
         }
     }
@@ -47,12 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     errorMsg.textContent = 'This field is required';
                     input.insertAdjacentElement('afterend', errorMsg);
                 }
-            } else {
-                input.classList.remove('error');
-                const errorMsg = input.nextElementSibling;
-                if (errorMsg?.classList.contains('error-message')) {
-                    errorMsg.remove();
-                }
             }
         });
 
@@ -70,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.style.display = currentSection === sections.length - 1 ? 'block' : 'none';
     }
 
-    // Component Initializers
+    // ===== COMPONENT INITIALIZERS =====
+
     function initRangeSliders() {
         form.querySelectorAll('.range-slider').forEach(slider => {
             const valueDisplay = slider.nextElementSibling;
@@ -85,12 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
         form.querySelectorAll('.option-card').forEach(card => {
             const checkbox = card.querySelector('input[type="checkbox"]');
             if (checkbox) {
-                // Set initial state
                 card.classList.toggle('selected', checkbox.checked);
                 
-                // Toggle on click
                 card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('move-btn')) {
+                    // Ignore clicks on move buttons or their children
+                    if (!e.target.closest('.move-btn')) {
                         checkbox.checked = !checkbox.checked;
                         card.classList.toggle('selected', checkbox.checked);
                     }
@@ -117,8 +109,15 @@ document.addEventListener('DOMContentLoaded', function() {
             item.appendChild(controls);
 
             // Move handlers
-            controls.querySelector('.up').addEventListener('click', () => moveItem(item, 'up'));
-            controls.querySelector('.down').addEventListener('click', () => moveItem(item, 'down'));
+            controls.querySelector('.up').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                moveItem(item, 'up');
+            });
+
+            controls.querySelector('.down').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                moveItem(item, 'down');
+            });
 
             // Drag events
             item.setAttribute('draggable', 'true');
@@ -184,10 +183,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event Listeners
-    prevBtn.addEventListener('click', () => navigate(-1));
-    nextBtn.addEventListener('click', () => navigate(1));
-    
+    // ===== EVENT LISTENERS =====
+
+    prevBtn.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('move-btn')) {
+            navigate(-1);
+        }
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('move-btn')) {
+            navigate(1);
+        }
+    });
+
     submitBtn.addEventListener('click', async function(e) {
         e.preventDefault();
         
@@ -204,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.forEach((value, key) => {
                 if (!value && value !== '0') return;
                 
-                if (key === 'resources' || key === 'features' || key === 'preferences') {
+                if (key === 'resources' || key === 'preferences') {
                     if (!data[key]) data[key] = [];
                     data[key].push(value);
                 } else {
@@ -214,11 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Add metadata
-            data.timestamp = new Date().toISOString();
-            data.surveyType = form.id;
-
-            // Handle drag ranking if exists
+            // Add rankings if available
             const dragContainer = form.querySelector('#drag-container');
             if (dragContainer) {
                 data.rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
@@ -236,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 alert('Thank you for your feedback!');
                 form.reset();
-                // Reset form to first section
+                // Reset to first section
                 while (currentSection > 0) navigate(-1);
             } else {
                 throw new Error('Submission failed');
