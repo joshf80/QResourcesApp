@@ -218,43 +218,54 @@ document.addEventListener('DOMContentLoaded', function () {
         submitBtn.textContent = 'Enviando...';
 
         try {
-            // NEW: Improved data collection
+            // Create data object with form metadata
             const data = {
-                formType: form.id.includes('chatbot') ? 'AI Assistant' : 'Community Data',
+                formType: form.id,
                 timestamp: new Date().toISOString()
             };
 
-            // 1. Process all form controls
-            Array.from(form.elements).forEach(element => {
-                if (!element.name || element.disabled) return;
-
-                // Handle checkboxes (AI Assistant form)
-                if (element.type === 'checkbox') {
-                    if (!element.checked) return;
-                    if (!data[element.name]) data[element.name] = [];
-                    data[element.name].push(element.value);
-                }
-                // Handle sliders
-                else if (element.type === 'range') {
-                    const label = element.closest('.slider-group')?.querySelector('label')?.textContent || element.name;
-                    data[label] = element.value;
-                }
-                // Handle all other inputs
-                else if (element.value) {
-                    data[element.name] = element.value;
+            // 1. Process all slider groups with their labels
+            document.querySelectorAll('.slider-group').forEach(group => {
+                const label = group.querySelector('label').textContent.trim();
+                const slider = group.querySelector('.slider');
+                const value = slider.value;
+                data[label] = value;
+                
+                // For the output display
+                const output = slider.nextElementSibling;
+                if (output && output.tagName === 'OUTPUT') {
+                    data[label + '_display'] = output.textContent;
                 }
             });
 
-            // 2. Process rankings if available (Community Data form)
+            // 2. Process checkboxes (for AI Assistant form)
+            document.querySelectorAll('.checkbox-option input[type="checkbox"]:checked').forEach(checkbox => {
+                if (!data[checkbox.name]) data[checkbox.name] = [];
+                data[checkbox.name].push(checkbox.value);
+            });
+
+            // 3. Process rankings (for Community Data form)
             const rankingContainer = document.getElementById('drag-container');
             if (rankingContainer) {
                 data.rankings = Array.from(rankingContainer.querySelectorAll('.rank-item'))
-                    .map((item, index) => `${index + 1}. ${item.dataset.value}`);
+                    .map((item, index) => ({
+                        position: index + 1,
+                        value: item.dataset.value
+                    }));
             }
 
-            console.log('Submitting data:', data); // Debug log
+            // 4. Process textareas and other inputs
+            ['input:not([type="checkbox"]):not([type="range"])', 'textarea', 'select'].forEach(selector => {
+                document.querySelectorAll(selector).forEach(input => {
+                    if (input.name && input.value && input.value.trim() !== '') {
+                        data[input.name] = input.value.trim();
+                    }
+                });
+            });
 
-            // 3. Submit data
+            console.log('Form data being submitted:', data);
+
+            // Submit data
             const response = await fetch('https://formspree.io/f/manebrab', {
                 method: 'POST',
                 headers: { 
