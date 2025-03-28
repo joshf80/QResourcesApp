@@ -1,248 +1,252 @@
-// Survey Navigation
+// scripts.js - Universal Survey Handler for Both Forms
 document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        const sections = form.querySelectorAll('.survey-section');
-        const progressBar = form.querySelector('.progress');
-        const prevBtn = form.querySelector('#prev-btn');
-        const nextBtn = form.querySelector('#next-btn');
-        const submitBtn = form.querySelector('#submit-btn');
-        let currentSection = 0;
+    // Initialize any survey form on the page
+    const form = document.querySelector('form[id$="-form"]');
+    if (!form) return;
 
-        // Initialize range sliders
-        const rangeSliders = form.querySelectorAll('.range-slider');
-        rangeSliders.forEach(slider => {
-            const valueDisplay = slider.nextElementSibling;
-            if (valueDisplay) {
-                slider.addEventListener('input', () => {
-                    try {
-                        valueDisplay.textContent = slider.value;
-                    } catch (error) {
-                        console.error('Error updating range slider display:', error);
-                    }
-                });
-            }
-        });
+    // Common elements
+    const sections = form.querySelectorAll('.survey-section');
+    const progressBar = form.querySelector('.progress');
+    const prevBtn = form.querySelector('#prev-btn');
+    const nextBtn = form.querySelector('#next-btn');
+    const submitBtn = form.querySelector('#submit-btn');
+    let currentSection = 0;
 
-        // Initialize option cards
-        const optionCards = form.querySelectorAll('.option-card');
-        optionCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const checkbox = card.querySelector('input[type="checkbox"]');
-                if (checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                    card.classList.toggle('selected', checkbox.checked);
-                }
-            });
-        });
+    // Initialize form components
+    initRangeSliders();
+    initOptionCards();
+    initDragRanking();
+    updateProgress();
+    updateNavigation();
 
-        // Initialize drag and drop with touch support
-        const dragContainer = form.querySelector('#drag-container');
-        if (dragContainer) {
-            const draggableItems = dragContainer.querySelectorAll('.draggable-item');
-            let draggedItem = null;
-
-            // Add touch-friendly controls
-            draggableItems.forEach((item, index) => {
-                // Add move up/down buttons
-                const controls = document.createElement('div');
-                controls.className = 'item-controls';
-                controls.innerHTML = `
-                    <button class="move-btn up" ${index === 0 ? 'disabled' : ''}>↑</button>
-                    <button class="move-btn down" ${index === draggableItems.length - 1 ? 'disabled' : ''}>↓</button>
-                `;
-                item.appendChild(controls);
-
-                // Handle move up/down
-                controls.querySelector('.up').addEventListener('click', () => {
-                    const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
-                    const currentIndex = items.indexOf(item);
-                    if (currentIndex > 0) {
-                        dragContainer.insertBefore(item, items[currentIndex - 1]);
-                        updateMoveButtons();
-                    }
-                });
-
-                controls.querySelector('.down').addEventListener('click', () => {
-                    const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
-                    const currentIndex = items.indexOf(item);
-                    if (currentIndex < items.length - 1) {
-                        dragContainer.insertBefore(item, items[currentIndex + 2]);
-                        updateMoveButtons();
-                    }
-                });
-
-                // Keep drag functionality for desktop
-                item.addEventListener('dragstart', () => {
-                    draggedItem = item;
-                    item.classList.add('dragging');
-                });
-
-                item.addEventListener('dragend', () => {
-                    item.classList.remove('dragging');
-                    draggedItem = null;
-                    updateMoveButtons();
-                });
-            });
-
-            // Update move buttons state
-            function updateMoveButtons() {
-                const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
-                items.forEach((item, index) => {
-                    const controls = item.querySelector('.item-controls');
-                    controls.querySelector('.up').disabled = index === 0;
-                    controls.querySelector('.down').disabled = index === items.length - 1;
-                });
-            }
-
-            // Keep drag and drop for desktop
-            dragContainer.addEventListener('dragover', e => {
-                e.preventDefault();
-                if (!draggedItem) return;
-                
-                const items = Array.from(dragContainer.querySelectorAll('.draggable-item:not(.dragging)'));
-                const nextSibling = items.find(sibling => {
-                    const rect = sibling.getBoundingClientRect();
-                    return e.clientY <= rect.top + rect.height / 2;
-                });
-                
-                if (nextSibling) {
-                    dragContainer.insertBefore(draggedItem, nextSibling);
-                    updateMoveButtons();
-                }
-            });
-        }
-
-        // Update progress bar
-        function updateProgress() {
-            const progress = ((currentSection + 1) / sections.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        // Show/hide navigation buttons
-        function updateNavigation() {
-            prevBtn.disabled = currentSection === 0;
-            nextBtn.style.display = currentSection === sections.length - 1 ? 'none' : 'block';
-            submitBtn.style.display = currentSection === sections.length - 1 ? 'block' : 'none';
-        }
-
-        // Navigate between sections
-        function navigate(direction) {
+    // Navigation functions
+    function navigate(direction) {
+        if (validateCurrentSection()) {
             sections[currentSection].classList.remove('active');
             currentSection += direction;
             sections[currentSection].classList.add('active');
             updateProgress();
             updateNavigation();
+            // Focus first input for accessibility
+            sections[currentSection].querySelector('input, textarea, select')?.focus();
         }
+    }
 
-        // Event listeners for navigation
-        prevBtn.addEventListener('click', () => navigate(-1));
-        nextBtn.addEventListener('click', () => navigate(1));
+    function validateCurrentSection() {
+        const currentSectionEl = sections[currentSection];
+        const requiredInputs = currentSectionEl.querySelectorAll('[required]');
+        let isValid = true;
 
-        // Form submission
-        let isSubmitting = false;
-        submitBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            
-            // Ensure we're on the last section
-            if (currentSection !== sections.length - 1) {
-                console.error('Attempted submission from wrong section');
-                return;
-            }
-            
-            // Prevent double submission
-            if (isSubmitting) return;
-            isSubmitting = true;
-            
-            // Disable submit button to prevent multiple clicks
-            submitBtn.disabled = true;
-            
-            try {
-                // Validate required fields
-                const requiredFields = form.querySelectorAll('input[required], textarea[required]');
-                let isValid = true;
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        isValid = false;
-                        field.classList.add('error');
-                    } else {
-                        field.classList.remove('error');
-                    }
-                });
-
-                if (!isValid) {
-                    throw new Error('Please fill in all required fields');
+        requiredInputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('error');
+                if (!input.nextElementSibling?.classList.contains('error-message')) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'error-message';
+                    errorMsg.textContent = 'This field is required';
+                    input.insertAdjacentElement('afterend', errorMsg);
                 }
-
-                // Collect form data
-                const formData = new FormData(form);
-                const data = {};
-                formData.forEach((value, key) => {
-                    // Skip empty values
-                    if (!value && value !== '0') return;
-                    
-                    if (key === 'resources' || key === 'features' || key === 'preferences') {
-                        if (!data[key]) data[key] = [];
-                        data[key].push(value);
-                    } else {
-                        // Convert range slider values to numbers
-                        if (form.querySelector(`input[name="${key}"]`)?.type === 'range') {
-                            data[key] = parseInt(value);
-                        } else {
-                            data[key] = value;
-                        }
-                    }
-                });
-
-                // Add timestamp and survey type
-                data.timestamp = new Date().toISOString();
-                data.surveyType = form.id;
-
-                // Get rankings if they exist
-                if (dragContainer) {
-                    const rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
-                        .map(item => item.dataset.value)
-                        .filter(value => value && value.trim() !== '');
-                    if (rankings.length > 0) {
-                        data.rankings = rankings;
-                    }
+            } else {
+                input.classList.remove('error');
+                const errorMsg = input.nextElementSibling;
+                if (errorMsg?.classList.contains('error-message')) {
+                    errorMsg.remove();
                 }
-
-                // Log the data being sent for debugging
-                console.log('Form data being sent:', data);
-
-                // Submit to Formspree
-                const response = await fetch('https://formspree.io/f/manebrab', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    // Show success message
-                    alert('Gracias!');
-                    form.reset();
-                    // Reset to first section
-                    while (currentSection > 0) {
-                        navigate(-1);
-                    }
-                } else {
-                    throw new Error('Error submitting form');
-                }
-            } catch (error) {
-                console.error('Error submitting survey response:', error);
-                alert(error.message || 'There was an error submitting your response. Please try again later.');
-            } finally {
-                // Re-enable submit button and reset submission state
-                submitBtn.disabled = false;
-                isSubmitting = false;
             }
         });
 
-        // Initialize progress and navigation
-        updateProgress();
-        updateNavigation();
+        return isValid;
+    }
+
+    function updateProgress() {
+        const progress = ((currentSection + 1) / sections.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function updateNavigation() {
+        prevBtn.disabled = currentSection === 0;
+        nextBtn.style.display = currentSection === sections.length - 1 ? 'none' : 'block';
+        submitBtn.style.display = currentSection === sections.length - 1 ? 'block' : 'none';
+    }
+
+    // Component Initializers
+    function initRangeSliders() {
+        form.querySelectorAll('.range-slider').forEach(slider => {
+            const valueDisplay = slider.nextElementSibling;
+            valueDisplay.textContent = slider.value;
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = slider.value;
+            });
+        });
+    }
+
+    function initOptionCards() {
+        form.querySelectorAll('.option-card').forEach(card => {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                // Set initial state
+                card.classList.toggle('selected', checkbox.checked);
+                
+                // Toggle on click
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('move-btn')) {
+                        checkbox.checked = !checkbox.checked;
+                        card.classList.toggle('selected', checkbox.checked);
+                    }
+                });
+            }
+        });
+    }
+
+    function initDragRanking() {
+        const dragContainer = form.querySelector('#drag-container');
+        if (!dragContainer) return;
+
+        const draggableItems = dragContainer.querySelectorAll('.draggable-item');
+        let draggedItem = null;
+
+        draggableItems.forEach((item, index) => {
+            // Add move controls
+            const controls = document.createElement('div');
+            controls.className = 'item-controls';
+            controls.innerHTML = `
+                <button class="move-btn up" ${index === 0 ? 'disabled' : ''}>↑</button>
+                <button class="move-btn down" ${index === draggableItems.length - 1 ? 'disabled' : ''}>↓</button>
+            `;
+            item.appendChild(controls);
+
+            // Move handlers
+            controls.querySelector('.up').addEventListener('click', () => moveItem(item, 'up'));
+            controls.querySelector('.down').addEventListener('click', () => moveItem(item, 'down'));
+
+            // Drag events
+            item.setAttribute('draggable', 'true');
+            item.addEventListener('dragstart', () => {
+                draggedItem = item;
+                item.classList.add('dragging');
+            });
+
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                draggedItem = null;
+                updateMoveButtons();
+            });
+        });
+
+        dragContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!draggedItem) return;
+            
+            const afterElement = getDragAfterElement(dragContainer, e.clientY);
+            if (afterElement) {
+                dragContainer.insertBefore(draggedItem, afterElement);
+            } else {
+                dragContainer.appendChild(draggedItem);
+            }
+        });
+
+        function moveItem(item, direction) {
+            const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
+            const currentIndex = items.indexOf(item);
+            const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+            if (newIndex >= 0 && newIndex < items.length) {
+                dragContainer.insertBefore(item, items[newIndex + (direction === 'up' ? 0 : 1)]);
+                updateMoveButtons();
+            }
+        }
+
+        function updateMoveButtons() {
+            const items = Array.from(dragContainer.querySelectorAll('.draggable-item'));
+            items.forEach((item, index) => {
+                const upBtn = item.querySelector('.move-btn.up');
+                const downBtn = item.querySelector('.move-btn.down');
+                
+                if (upBtn) upBtn.disabled = index === 0;
+                if (downBtn) downBtn.disabled = index === items.length - 1;
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    }
+
+    // Event Listeners
+    prevBtn.addEventListener('click', () => navigate(-1));
+    nextBtn.addEventListener('click', () => navigate(1));
+    
+    submitBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        if (!validateCurrentSection()) return;
+        
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        try {
+            const formData = new FormData(form);
+            const data = {};
+            
+            formData.forEach((value, key) => {
+                if (!value && value !== '0') return;
+                
+                if (key === 'resources' || key === 'features' || key === 'preferences') {
+                    if (!data[key]) data[key] = [];
+                    data[key].push(value);
+                } else {
+                    data[key] = form.querySelector(`input[name="${key}"]`)?.type === 'range' 
+                        ? parseInt(value) 
+                        : value;
+                }
+            });
+
+            // Add metadata
+            data.timestamp = new Date().toISOString();
+            data.surveyType = form.id;
+
+            // Handle drag ranking if exists
+            const dragContainer = form.querySelector('#drag-container');
+            if (dragContainer) {
+                data.rankings = Array.from(dragContainer.querySelectorAll('.draggable-item'))
+                    .map(item => item.dataset.value)
+                    .filter(Boolean);
+            }
+
+            // Submit data
+            const response = await fetch('', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('Thank you for your feedback!');
+                form.reset();
+                // Reset form to first section
+                while (currentSection > 0) navigate(-1);
+            } else {
+                throw new Error('Submission failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('There was an error submitting your form. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     });
 });
