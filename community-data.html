@@ -43,22 +43,55 @@
           </div>
         </div>
       </div>
-
-      <!-- Section 2 -->
-      <div class="survey-section" id="section-2">
-        <h2>Desafíos de Accesibilidad</h2>
-        <div class="question">
-          <label>Ordene por importancia estos obstáculos:</label>
-          <div class="ranking-box" id="drag-container">
-            <div class="rank-item" draggable="true">Barreras de Idioma</div>
-            <div class="rank-item" draggable="true">Distancia</div>
-            <div class="rank-item" draggable="true">Falta de Información</div>
-            <div class="rank-item" draggable="true">Transporte</div>
-            <div class="rank-item" draggable="true">Restricciones de Tiempo</div>
+  <!-- Section 2 - Mobile Optimized -->
+  <div class="survey-section" id="section-2">
+    <h2>Desafíos de Accesibilidad</h2>
+    <div class="question">
+      <label>Ordene por importancia (arrastre o use los botones):</label>
+      <div class="ranking-box" id="drag-container">
+        <div class="rank-item" draggable="true" data-value="Barreras de Idioma">
+          <span class="rank-text">Barreras de Idioma</span>
+          <div class="rank-controls">
+            <button class="move-btn up" aria-label="Mover arriba">↑</button>
+            <button class="move-btn down" aria-label="Mover abajo">↓</button>
+          </div>
+        </div>
+        
+        <div class="rank-item" draggable="true" data-value="Distancia">
+          <span class="rank-text">Distancia</span>
+          <div class="rank-controls">
+            <button class="move-btn up" aria-label="Mover arriba">↑</button>
+            <button class="move-btn down" aria-label="Mover abajo">↓</button>
+          </div>
+        </div>
+        
+        <div class="rank-item" draggable="true" data-value="Falta de Información">
+          <span class="rank-text">Falta de Información</span>
+          <div class="rank-controls">
+            <button class="move-btn up" aria-label="Mover arriba">↑</button>
+            <button class="move-btn down" aria-label="Mover abajo">↓</button>
+          </div>
+        </div>
+        
+        <div class="rank-item" draggable="true" data-value="Transporte">
+          <span class="rank-text">Transporte</span>
+          <div class="rank-controls">
+            <button class="move-btn up" aria-label="Mover arriba">↑</button>
+            <button class="move-btn down" aria-label="Mover abajo">↓</button>
+          </div>
+        </div>
+        
+        <div class="rank-item" draggable="true" data-value="Restricciones de Tiempo">
+          <span class="rank-text">Restricciones de Tiempo</span>
+          <div class="rank-controls">
+            <button class="move-btn up" aria-label="Mover arriba">↑</button>
+            <button class="move-btn down" aria-label="Mover abajo">↓</button>
           </div>
         </div>
       </div>
-
+      <p class="help-text">Toque y mantenga para arrastrar, o use los botones ↑↓</p>
+    </div>
+  </div>
       <!-- Navigation -->
       <div class="nav-buttons">
         <button type="button" id="prev-btn" disabled>Anterior</button>
